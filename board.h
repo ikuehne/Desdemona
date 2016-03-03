@@ -6,29 +6,151 @@
 using namespace std;
 
 class Board {
-   
+ 
 private:
+
+    /**
+     * @brief All black pieces on the board.
+     */
     bitset<64> black;
+
+    /**
+     * @brief All pieces of any color on the board.
+     */
     bitset<64> taken;    
-       
+ 
+    /**
+     * @brief Check if a square is occupied.
+     *
+     * @param x The x-coordinate of the square to check.
+     * @param y The y-coordinate of the square to check.
+     *
+     * @return Whether the square is occupied by a piece of either color.
+     */
     bool occupied(int x, int y);
+
+    /**
+     * @brief Check if a piece of the given side is at the given square.
+     *
+     * Returns `false` if the square is empty or occupied by a piece of the
+     * other color.
+     *
+     * @param side The side to check.
+     * @param x The x-coordinate of the square to check.
+     * @param y The y-coordinate of the square to check.
+     *
+     * @return Whether the given square is occupied by a piece of the given
+     *         side.
+     */
     bool get(Side side, int x, int y);
+
+    /**
+     * @brief Place a piece of the given side at the square.
+     *
+     * Does not check if the move is legal or even if the square is already
+     * occupied.
+     *
+     * @param side The color of the piece to place.
+     * @param x The x-coordinate of the square to place it at.
+     * @param y The y-coordinate of the square to place it at.
+     */
     void set(Side side, int x, int y);
+
+    /**
+     * @brief Return whether the given coordinate represents a valid square.
+     *
+     * @param x The x-coordinate to check.
+     * @param y The y-coordinate to check.
+     *
+     * @return Whether both coordinates fall in the interval [0, 7].
+     */
     bool onBoard(int x, int y);
       
 public:
+
+    /**
+     * @brief Construct a new board in the usual starting position.
+     */
     Board();
+
+    /**
+     * @brief Clean up all resources associated with the board.
+     */
     ~Board();
+
+    /**
+     * @brief Return a pointer to a copy of the board.
+     *
+     * @return A pointer to a newly allocated board with the same pieces.
+     */
     Board *copy();
-        
+ 
+    /**
+     * @brief Return whether the game is done. 
+     *
+     * @return `true` iff neither player has a valid move.
+     */
     bool isDone();
+
+    /**
+     * @brief Return whether the given side has a valid move.
+     *
+     * @param side The side to check.
+     *
+     * @return `false` iff there is no valid move for `side`.
+     */
     bool hasMoves(Side side);
+
+    /**
+     * @brief Check whether the given move is legal.
+     *
+     * @param m A pointer to the move to check.
+     * @param side The side that would be making the move.
+     *
+     * @return `true` iff `side` can make `move` according to the rules of the
+     *         game.
+     */
     bool checkMove(Move *m, Side side);
+
+    /**
+     * @brief Make a move on the board.
+     *
+     * @param m A pointer to the move to make.
+     * @param side The side that makes the move.
+     */
     void doMove(Move *m, Side side);
+
+    /**
+     * @brief Count the number of pieces the given side has on the board.
+     *
+     * @param side The side to check for.
+     *
+     * @return The number of pieces that side has on the board.
+     */
     int count(Side side);
+
+    /**
+     * @brief Return the number of black pieces on the board.
+     *
+     * @return The number of black pieces on the board.
+     */
     int countBlack();
+
+    /**
+     * @brief Return the number of white pieces on the board.
+     *
+     * @return The number of white pieces on the board.
+     */
     int countWhite();
 
+    /**
+     * @brief Set the board from a char array.
+     *
+     * `'w'` represents white pieces and `'b'` black pieces. Behavior for
+     * other pieces is not specified.
+     *
+     * @param data A string to get the board from.
+     */
     void setBoard(char data[]);
 };
 

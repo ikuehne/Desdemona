@@ -1,8 +1,5 @@
 #include "board.h"
 
-/*
- * Make a standard 8x8 othello board and initialize it to the standard setup.
- */
 Board::Board() {
     taken.set(3 + 8 * 3);
     taken.set(3 + 8 * 4);
@@ -12,15 +9,9 @@ Board::Board() {
     black.set(3 + 8 * 4);
 }
 
-/*
- * Destructor for the board.
- */
 Board::~Board() {
 }
 
-/*
- * Returns a copy of this board.
- */
 Board *Board::copy() {
     Board *newBoard = new Board();
     newBoard->black = black;
@@ -31,7 +22,7 @@ Board *Board::copy() {
 bool Board::occupied(int x, int y) {
     return taken[x + 8*y];
 }
-
+ 
 bool Board::get(Side side, int x, int y) {
     return occupied(x, y) && (black[x + 8*y] == (side == BLACK));
 }
@@ -46,17 +37,10 @@ bool Board::onBoard(int x, int y) {
 }
 
  
-/*
- * Returns true if the game is finished; false otherwise. The game is finished 
- * if neither side has a legal move.
- */
 bool Board::isDone() {
     return !(hasMoves(BLACK) || hasMoves(WHITE));
 }
 
-/*
- * Returns true if there are legal moves for the given side.
- */
 bool Board::hasMoves(Side side) {
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
@@ -67,9 +51,6 @@ bool Board::hasMoves(Side side) {
     return false;
 }
 
-/*
- * Returns true if a move is legal for the given side; false otherwise.
- */
 bool Board::checkMove(Move *m, Side side) {
     // Passing is only legal if you have no moves.
     if (m == NULL) return !hasMoves(side);
@@ -101,9 +82,6 @@ bool Board::checkMove(Move *m, Side side) {
     return false;
 }
 
-/*
- * Modifies the board to reflect the specified move.
- */
 void Board::doMove(Move *m, Side side) {
     // A NULL move means pass.
     if (m == NULL) return;
@@ -141,31 +119,18 @@ void Board::doMove(Move *m, Side side) {
     set(side, X, Y);
 }
 
-/*
- * Current count of given side's stones.
- */
 int Board::count(Side side) {
     return (side == BLACK) ? countBlack() : countWhite();
 }
 
-/*
- * Current count of black stones.
- */
 int Board::countBlack() {
     return black.count();
 }
 
-/*
- * Current count of white stones.
- */
 int Board::countWhite() {
     return taken.count() - black.count();
 }
 
-/*
- * Sets the board state given an 8x8 char array where 'w' indicates a white
- * piece and 'b' indicates a black piece. Mainly for testing purposes.
- */
 void Board::setBoard(char data[]) {
     taken.reset();
     black.reset();
