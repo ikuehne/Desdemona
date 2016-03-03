@@ -8,6 +8,11 @@
 #include "common.h"
 #include "board.h"
 
+/**
+ * @brief represent an Othello player.
+ *
+ * The player also keeps track of its board.
+ */
 class Player {
 
 public:

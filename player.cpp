@@ -16,29 +16,22 @@ Player::~Player() {
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
     board.doMove(opponentsMove, opponent);
 
-    std::vector<Move *> legals;
+    std::vector<Move *> *legals = board.getLegals(side);
     Move curr(0, 0);
-    for (int x = 0; x < 8; x++) {
-        for (int y = 0; y < 8; y++) {
-            curr.setX(x);
-            curr.setY(y);
-            if (board.checkMove(&curr, side)) {
-                legals.push_back(new Move(x, y));
-            }
-        }
-    }
 
-    if (legals.size() == 0) {
+    if (legals->size() == 0) {
         return NULL;
     }
 
-    Move *rand_item = legals[rand() % legals.size()];
+    Move *rand_item = (*legals)[rand() % legals->size()];
     curr.setX(rand_item->x);
     curr.setY(rand_item->y);
     
-    for (int i = 0; i < legals.size(); i++) {
-        delete legals[i];
+    for (int i = 0; i < legals->size(); i++) {
+        delete (*legals)[i];
     }
+
+    delete legals;
 
     if (!board.checkMove(&curr, side)) {
         return NULL;
