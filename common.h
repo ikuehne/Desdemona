@@ -35,6 +35,10 @@ public:
         this->x = x;
         this->y = y;        
     }
+
+    bool operator==(const Move &other) {
+        return this->x == other.x && this->y == other.y;
+    }
     
     /**
      * @brief Clean up after a `Move`.
