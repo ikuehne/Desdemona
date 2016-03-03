@@ -151,14 +151,14 @@ int Board::assess(Side side) {
     score += REGULAR_MUL * mul * countWhite();
     score -= REGULAR_MUL * mul * countBlack();
 
-    for (int i = 0; i < 64; i += 8) {
-        if (taken[i] && !black[i]) {
-            score += (CORNER_MUL - 1) * mul;
-        }
-        if (taken[i] && black[i]) {
-            score -= (CORNER_MUL - 1) * mul;
-        }
-    }
+    if (taken[0] && !black[0]) score += (CORNER_MUL - REGULAR_MUL) * mul;
+    if (taken[0] &&  black[0]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
+    if (taken[7] && !black[7]) score += (CORNER_MUL - REGULAR_MUL) * mul;
+    if (taken[7] &&  black[7]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
+    if (taken[56] && !black[56]) score += (CORNER_MUL - REGULAR_MUL) * mul;
+    if (taken[56] &&  black[56]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
+    if (taken[63] && !black[63]) score += (CORNER_MUL - REGULAR_MUL) * mul;
+    if (taken[63] &&  black[63]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
 
     return score;
 }

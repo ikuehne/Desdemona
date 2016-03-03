@@ -7,7 +7,8 @@
 using namespace std;
 
 #define REGULAR_MUL 1
-#define CORNER_MUL 2
+#define CORNER_MUL 5
+#define SIDE_MUL
 
 /**
  * @brief Encapsulate an Othello board.
