@@ -1,14 +1,15 @@
 public class TestGame {
 
     public static void main(String[] args) {
-        if (args.length != 2 && args.length != 3) {
+        if (args.length != 2 && args.length != 3 && args.length != 4) {
             // Wrong number of arguments; print usage string.
             String s
                 = "\nUsage: TestGame BLACK WHITE [TIMELIMIT]\n"
                 + "  BLACK/WHITE - c++ program name or:\n"
                 + "    SimplePlayer, ConstantTimePlayer, BetterPlayer - AIs\n"
                 + "    Human - manual input\n"
-                + "  TIMELIMIT - optional timelimit for each player in milliseconds:\n";                           
+                + "  TIMELIMIT - optional timelimit for each player in milliseconds:\n"
+                + "  -silent - optional flag for suppressing the pretty pictures. Must come at the end.\n";
             System.out.println(s);
             System.exit(-1);
         }
@@ -31,9 +32,18 @@ public class TestGame {
         }
         
         // Start the game.
-        OthelloObserver o = new OthelloDisplay();
+        OthelloObserver o = null;
+        int silent = 1;
+        if (args.length == 2 || !(args[2].equalsIgnoreCase("-silent")))
+        {
+            silent = 0;
+        }
+        if (args.length == 4) {
+            silent = 1;
+        }
+        if (silent == 0){ o = new OthelloDisplay(); }
         OthelloGame g = null;
-        if (args.length == 2) {
+        if (args.length == 2 || args[2].equalsIgnoreCase("-silent")) {
             // No timeout arg given; use unlimited time.
             g = new OthelloGame(players[0], players[1], o);
         } else {
@@ -47,6 +57,15 @@ public class TestGame {
             }
         }
         System.out.println("Starting game");
-        g.run();
+        if (silent == 0) {
+            g.run();
+        } else {
+            OthelloSide w = g.runCheck();
+            if (w != null) {
+                System.out.println(w.toString());
+            } else {
+                System.out.println("Could not detemine a winner.");
+            }
+        }
     }
 }

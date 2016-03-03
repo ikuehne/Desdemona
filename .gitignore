@@ -1,0 +1,6 @@
+*.o
+*.class
+*.swp
+player
+testgame
+OthelloFramework.jar

@@ -45,7 +45,10 @@ public class OthelloResult implements Serializable
    {
       // Running out of memory counts as a draw.
       if(error != null && error instanceof ErrorException && ((ErrorException)error).error instanceof OutOfMemoryError)
+      {
+          System.out.println("Bad error things");
          return null;
+      }
 
       if( (conclusion == NORMAL_CONCLUSION && blackScore > whiteScore)
         || conclusion == WHITE_ERROR_CONCLUSION)
@@ -54,8 +57,12 @@ public class OthelloResult implements Serializable
          ( conclusion == NORMAL_CONCLUSION && whiteScore > blackScore)
         || conclusion == BLACK_ERROR_CONCLUSION)
          return OthelloSide.WHITE;
-      else
+      else {
+          System.out.println("this is impossible");
+                  
          return null;
+
+      }
    }
 
    /**
