@@ -30,5 +30,6 @@ cleanjava:
 
 clean:
 	rm -f *.o $(PLAYERNAME) testgame testminimax
+	rm -rf html
 	
 .PHONY: java testminimax
