@@ -1,9 +1,14 @@
 CC          = g++
+DOCGEN      = doxygen
 CFLAGS      = -Wall -ansi -pedantic -ggdb
 OBJS        = player.o board.o
 PLAYERNAME  = player
 
 all: $(PLAYERNAME) testgame
+
+doc:
+	$(DOCGEN) DoxygenLayout.xml
+	rm -r latex
 	
 $(PLAYERNAME): $(OBJS) wrapper.o
 	$(CC) -o $@ $^
