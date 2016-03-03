@@ -144,21 +144,48 @@ void Board::setBoard(char data[]) {
     }
 }
 
-int Board::assess(Side side) {
+int Board::assess(Side side, bool testingMinimax) {
     int score = 0;
     int mul = side == WHITE? 1: -1;
 
     score += REGULAR_MUL * mul * countWhite();
     score -= REGULAR_MUL * mul * countBlack();
 
-    if (taken[0] && !black[0]) score += (CORNER_MUL - REGULAR_MUL) * mul;
-    if (taken[0] &&  black[0]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
-    if (taken[7] && !black[7]) score += (CORNER_MUL - REGULAR_MUL) * mul;
-    if (taken[7] &&  black[7]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
-    if (taken[56] && !black[56]) score += (CORNER_MUL - REGULAR_MUL) * mul;
-    if (taken[56] &&  black[56]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
-    if (taken[63] && !black[63]) score += (CORNER_MUL - REGULAR_MUL) * mul;
-    if (taken[63] &&  black[63]) score -= (CORNER_MUL - REGULAR_MUL) * mul;
+    if (testingMinimax) return score;
+
+    // Left side.
+    for (int i = 0; i < 64; i += 8) {
+        if (taken[i] && !black[i]) score += mul * (SIDE_MUL - REGULAR_MUL);
+        if (taken[i] &&  black[i]) score -= mul * (SIDE_MUL - REGULAR_MUL);
+    }
+
+    // Right side.
+    for (int i = 7; i < 64; i += 8) {
+        if (taken[i] && !black[i]) score += mul * (SIDE_MUL - REGULAR_MUL);
+        if (taken[i] &&  black[i]) score -= mul * (SIDE_MUL - REGULAR_MUL);
+    }
+
+    // Bottom.
+    for (int i = 0; i < 8; i ++) {
+        if (taken[i] && !black[i]) score += mul * (SIDE_MUL - REGULAR_MUL);
+        if (taken[i] &&  black[i]) score -= mul * (SIDE_MUL - REGULAR_MUL);
+    }
+
+    // Top.
+    for (int i = 56; i < 8; i ++) {
+        if (taken[i] && !black[i]) score += mul * (SIDE_MUL - REGULAR_MUL);
+        if (taken[i] &&  black[i]) score -= mul * (SIDE_MUL - REGULAR_MUL);
+    }
+
+    // Corners.
+    if (taken[0 ] && !black[0 ]) score += (CORNER_MUL - SIDE_MUL) * mul;
+    if (taken[0 ] &&  black[0 ]) score -= (CORNER_MUL - SIDE_MUL) * mul;
+    if (taken[7 ] && !black[7 ]) score += (CORNER_MUL - SIDE_MUL) * mul;
+    if (taken[7 ] &&  black[7 ]) score -= (CORNER_MUL - SIDE_MUL) * mul;
+    if (taken[56] && !black[56]) score += (CORNER_MUL - SIDE_MUL) * mul;
+    if (taken[56] &&  black[56]) score -= (CORNER_MUL - SIDE_MUL) * mul;
+    if (taken[63] && !black[63]) score += (CORNER_MUL - SIDE_MUL) * mul;
+    if (taken[63] &&  black[63]) score -= (CORNER_MUL - SIDE_MUL) * mul;
 
     return score;
 }

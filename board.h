@@ -7,8 +7,8 @@
 using namespace std;
 
 #define REGULAR_MUL 1
-#define CORNER_MUL 5
-#define SIDE_MUL
+#define SIDE_MUL 2
+#define CORNER_MUL 3
 
 /**
  * @brief Encapsulate an Othello board.
@@ -166,10 +166,13 @@ public:
      *
      * @param side The side to return an assessment for.
      *
+     * @param testingMinimax Whether the minimax test is being run.  If it is,
+     *                       a simpler heuristic function will be used.
+     *
      * @return An integer score which is higher for a favorable position and
      *         lower for an unfavorable one.
      */
-    int assess(Side side);
+    int assess(Side side, bool testingMinimax);
 
     /**
      * @brief Get a vector of all legal moves for a given side.

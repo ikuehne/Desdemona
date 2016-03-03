@@ -27,15 +27,15 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     Move *max_move = (*legals)[0];
     temp->doMove(max_move, side);
-    max_score = temp->assess(side);
+    max_score = temp->assess(side, testingMinimax);
     delete temp;
 
     for (int i = 1; i < legals->size(); i++) {
         temp = board.copy();
         temp->doMove((*legals)[i], side);
 
-        curr_score = temp->assess(side);
-        if (temp->assess(side) > max_score) {
+        curr_score = temp->assess(side, testingMinimax);
+        if (curr_score > max_score) {
             max_score = curr_score;
             max_move = (*legals)[i];
         }
