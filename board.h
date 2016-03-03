@@ -2,6 +2,7 @@
 #define __BOARD_H__
 
 #include <bitset>
+#include <vector>
 #include "common.h"
 using namespace std;
 
@@ -168,6 +169,15 @@ public:
      *         lower for an unfavorable one.
      */
     int assess(Side side);
+
+    /**
+     * @brief Get a vector of all legal moves for a given side.
+     *
+     * @param side The side making the move
+     *
+     * @return A vector of pointers to all legal moves for that side.
+     */
+    vector<Move *> *getLegals(Side side);
 };
 
 #endif

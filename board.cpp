@@ -162,3 +162,18 @@ int Board::assess(Side side) {
 
     return score;
 }
+
+vector<Move *> *Board::getLegals(Side side) {
+    Move *curr = new Move(0, 0);
+    vector<Move *> *result = new vector<Move *>;
+
+    for (int x = 0; x < 8; x++) {
+        for (int y = 0; y < 8; y++) {
+            curr->x = x;
+            curr->y = y;
+            if (checkMove(curr, side)) result->push_back(new Move(x, y));
+       }
+    }
+
+    return result;
+}
