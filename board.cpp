@@ -143,3 +143,22 @@ void Board::setBoard(char data[]) {
         }
     }
 }
+
+int Board::assess(Side side) {
+    int score = 0;
+    int mul = side == WHITE? 1: -1;
+
+    score += REGULAR_MUL * mul * countWhite();
+    score -= REGULAR_MUL * mul * countBlack();
+
+    for (int i = 0; i < 64; i += 8) {
+        if (taken[i] && !black[i]) {
+            score += (CORNER_MUL - 1) * mul;
+        }
+        if (taken[i] && black[i]) {
+            score -= (CORNER_MUL - 1) * mul;
+        }
+    }
+
+    return score;
+}

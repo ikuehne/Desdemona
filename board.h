@@ -5,6 +5,12 @@
 #include "common.h"
 using namespace std;
 
+#define REGULAR_MUL 1
+#define CORNER_MUL 2
+
+/**
+ * @brief Encapsulate an Othello board.
+ */
 class Board {
  
 private:
@@ -152,6 +158,16 @@ public:
      * @param data A string to get the board from.
      */
     void setBoard(char data[]);
+
+    /**
+     * @brief Provide an assessment of the favorability of the board.
+     *
+     * @param side The side to return an assessment for.
+     *
+     * @return An integer score which is higher for a favorable position and
+     *         lower for an unfavorable one.
+     */
+    int assess(Side side);
 };
 
 #endif
