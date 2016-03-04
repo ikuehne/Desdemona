@@ -3,8 +3,9 @@ DOCGEN      = doxygen
 CFLAGS      = -Wall -ansi -pedantic -ggdb -std=c++11
 OBJS        = player.o board.o
 PLAYERNAME  = player
+NETPLAYER   = neuralnetplayer
 
-all: $(PLAYERNAME) testgame
+all: $(PLAYERNAME) testgame nettestgame
 
 doc:
 	$(DOCGEN) DoxygenLayout.xml
@@ -13,7 +14,13 @@ doc:
 $(PLAYERNAME): $(OBJS) wrapper.o
 	$(CC) -o $@ $^
 
+$(NETPLAYER): neuralnetplayer.o board.o netwrapper.o
+	$(CC) -o $@ $^
+
 testgame: testgame.o
+	$(CC) -o $@ $^
+
+nettestgame: nettestgame.o
 	$(CC) -o $@ $^
 
 testminimax: $(OBJS) testminimax.o

@@ -1,20 +1,21 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstring>
-#include "player.h"
+#include "neuralnetplayer.h"
 using namespace std;
 
 int main(int argc, char *argv[]) {    
     // Read in side the player is on.
     if (argc != 2 && argc != 3)  {
-        cerr << "usage: " << argv[0] << " side" << endl;
+        cerr << "usage: " << argv[0] << " side";
+        cerr << " weightfile" << endl;
         exit(-1);
     }
     Side side = (!strcmp(argv[1], "Black")) ? BLACK : WHITE;
 
 
     // Initialize player.
-    Player *player = new Player(side);
+    NeuralNetPlayer *player = new NeuralNetPlayer(side, argv[2]);
 
     // Tell java wrapper that we are done initializing.
     cout << "Init done" << endl;

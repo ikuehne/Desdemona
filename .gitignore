@@ -3,4 +3,6 @@
 *.swp
 player
 testgame
+nettestgame
+neuralnetplayer
 OthelloFramework.jar

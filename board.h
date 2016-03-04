@@ -13,7 +13,7 @@ using namespace std;
 #define SIDE_MUL 2
 #define CORNER_MUL 3
 #define BOARD_SIZE 64
-#define HIDDEN_NODES 8
+#define TOTAL_WEIGHTS 584
 
 /**
  * @brief Encapsulate an Othello board.
@@ -35,9 +35,7 @@ private:
     /**
      * @brief arrays storing weights for neural net heuristic.
      */
-    int weightsDirect[BOARD_SIZE];
-    int weightsToHidden[HIDDEN_NODES][BOARD_SIZE];
-    int weightsFromHidden[HIDDEN_NODES];
+    int *weights;
  
     /**
      * @brief Check if a square is occupied.
@@ -93,7 +91,11 @@ public:
      */
     Board();
 
-    Board(char* weightFile);
+    /**
+     * @brief board constructor that takes pointers to neural
+     * network weights.
+     */
+    Board(int* weights);
 
     /**
      * @brief Clean up all resources associated with the board.
@@ -175,6 +177,8 @@ public:
      */
     void setBoard(char data[]);
 
+
+    int netAssess(Side side, bool testingMinimax);
     /**
      * @brief Provide an assessment of the favorability of the board.
      *

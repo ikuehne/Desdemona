@@ -7,6 +7,7 @@ Board::Board() {
     taken.set(4 + 8 * 4);
     black.set(4 + 8 * 3);
     black.set(3 + 8 * 4);
+    weights = NULL;
 }
 
 
@@ -14,7 +15,7 @@ Board::Board() {
  * Create a board with a heuristic neural net with weights
  * in the given file.
  */
-Board::Board(char* weightFile) {
+Board::Board(int* weights) {
     taken.set(3 + 8 * 3);
     taken.set(3 + 8 * 4);
     taken.set(4 + 8 * 3);
@@ -22,31 +23,8 @@ Board::Board(char* weightFile) {
     black.set(4 + 8 * 3);
     black.set(3 + 8 * 4);
 
-    ifstream file(weightFile);
-    std::string line;
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-        std::getline(file, line);
-        // TODO: error handling for invalid files
-        int weight = std::stoi(line);
-        weightsDirect[i] = weight;
-    }
-    for (int i = 0; i < HIDDEN_NODES; i++)
-    {
-        for (int j = 0; j < BOARD_SIZE; j++)
-        {
-            std::getline(file, line);
-            int weight = std::stoi(line);
-            weightsToHidden[i][j] = weight;
-        }
-    }
+    this->weights = weights;
 
-    for (int i = 0; i < HIDDEN_NODES; i++)
-    {
-        std::getline(file, line);
-        int weight = std::stoi(line);
-        weightsFromHidden[i] = weight;
-    }
 }
 
 Board::~Board() {
@@ -56,6 +34,7 @@ Board *Board::copy() {
     Board *newBoard = new Board();
     newBoard->black = black;
     newBoard->taken = taken;
+    newBoard->weights = weights;
     return newBoard;
 }
 
@@ -184,6 +163,30 @@ void Board::setBoard(char data[]) {
     }
 }
 
+int Board::netAssess(Side side, bool testingMinimax) {
+    int score = 0;
+
+    int mul = side == WHITE? 1: -1;
+
+    score += REGULAR_MUL * mul * countWhite();
+    score -= REGULAR_MUL * mul * countBlack();
+
+    if (testingMinimax) return score;
+    
+    // Noah's neural network assessment algorithm
+    // IN PROGRESS
+    
+    score = 0;
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        if (taken[i] && !black[i]) score += mul * weights[i];
+        if (taken[i] && black[i]) score -= mul * weights[i];
+    
+    }
+    return score;
+
+}
+
 int Board::assess(Side side, bool testingMinimax) {
     int score = 0;
     int mul = side == WHITE? 1: -1;
@@ -194,19 +197,6 @@ int Board::assess(Side side, bool testingMinimax) {
     if (testingMinimax) return score;
 
     
-    // Noah's neural network testing area starts here
-    /*
-    score = 0;
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-        if (taken[i] && !black[i]) score += mul * weightsDirect[i];
-        if (taken[i] && black[i]) score -= mul * weightsDirect[i];
-    
-    }
-    return score;
-    */
-    
-
     // Matrix operations
 
     // Left side.

@@ -5,7 +5,7 @@ times = int(sys.argv[3])
 blackwins = 0
 
 for i in range(times):
-    p = subprocess.Popen(["./testgame", sys.argv[1], sys.argv[2], "-silent"],
+    p = subprocess.Popen(["./nettestgame", sys.argv[1], sys.argv[2], "-silent"],
         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 
