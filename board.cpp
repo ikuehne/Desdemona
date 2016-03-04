@@ -193,6 +193,10 @@ int Board::assess(Side side, bool testingMinimax) {
 
     if (testingMinimax) return score;
 
+    
+    // Noah's neural network testing area starts here
+    /*
+    score = 0;
     for (int i = 0; i < BOARD_SIZE; i++)
     {
         if (taken[i] && !black[i]) score += mul * weightsDirect[i];
@@ -200,6 +204,8 @@ int Board::assess(Side side, bool testingMinimax) {
     
     }
     return score;
+    */
+    
 
     // Matrix operations
 
@@ -222,7 +228,7 @@ int Board::assess(Side side, bool testingMinimax) {
     }
 
     // Top.
-    for (int i = 56; i < 8; i ++) {
+    for (int i = 56; i < 64; i ++) {
         if (taken[i] && !black[i]) score += mul * (SIDE_MUL - REGULAR_MUL);
         if (taken[i] &&  black[i]) score -= mul * (SIDE_MUL - REGULAR_MUL);
     }
