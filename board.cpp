@@ -9,6 +9,46 @@ Board::Board() {
     black.set(3 + 8 * 4);
 }
 
+
+/**
+ * Create a board with a heuristic neural net with weights
+ * in the given file.
+ */
+Board::Board(char* weightFile) {
+    taken.set(3 + 8 * 3);
+    taken.set(3 + 8 * 4);
+    taken.set(4 + 8 * 3);
+    taken.set(4 + 8 * 4);
+    black.set(4 + 8 * 3);
+    black.set(3 + 8 * 4);
+
+    ifstream file(weightFile);
+    std::string line;
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        std::getline(file, line);
+        // TODO: error handling for invalid files
+        int weight = std::stoi(line);
+        weightsDirect[i] = weight;
+    }
+    for (int i = 0; i < HIDDEN_NODES; i++)
+    {
+        for (int j = 0; j < BOARD_SIZE; j++)
+        {
+            std::getline(file, line);
+            int weight = std::stoi(line);
+            weightsToHidden[i][j] = weight;
+        }
+    }
+
+    for (int i = 0; i < HIDDEN_NODES; i++)
+    {
+        std::getline(file, line);
+        int weight = std::stoi(line);
+        weightsFromHidden[i] = weight;
+    }
+}
+
 Board::~Board() {
 }
 
@@ -152,6 +192,16 @@ int Board::assess(Side side, bool testingMinimax) {
     score -= REGULAR_MUL * mul * countBlack();
 
     if (testingMinimax) return score;
+
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        if (taken[i] && !black[i]) score += mul * weightsDirect[i];
+        if (taken[i] && black[i]) score -= mul * weightsDirect[i];
+    
+    }
+    return score;
+
+    // Matrix operations
 
     // Left side.
     for (int i = 0; i < 64; i += 8) {

@@ -6,8 +6,9 @@ using namespace std;
 
 int main(int argc, char *argv[]) {    
     // Read in side the player is on.
-    if (argc != 2)  {
-        cerr << "usage: " << argv[0] << " side" << endl;
+    if (argc != 2 && argc != 3)  {
+        cerr << "usage: " << argv[0] << " side";
+        cerr << " (optional weightfile)" << endl;
         exit(-1);
     }
     Side side = (!strcmp(argv[1], "Black")) ? BLACK : WHITE;

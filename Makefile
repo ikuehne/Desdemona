@@ -1,6 +1,6 @@
 CC          = g++
 DOCGEN      = doxygen
-CFLAGS      = -Wall -ansi -pedantic -ggdb
+CFLAGS      = -Wall -ansi -pedantic -ggdb -std=c++11
 OBJS        = player.o board.o
 PLAYERNAME  = player
 

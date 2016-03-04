@@ -4,7 +4,7 @@ Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
     testingMinimax = false;
 
-    board = Board();   
+    board = Board("basicweightsint.txt");   
     this->side = side;
     opponent = side == BLACK? WHITE: BLACK;
     srand(time(NULL));
