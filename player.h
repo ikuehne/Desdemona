@@ -7,6 +7,7 @@
 #include <ctime>
 #include "common.h"
 #include "board.h"
+#include "gametree.h"
 
 /**
  * @brief represent an Othello player.
@@ -62,7 +63,13 @@ private:
     /**
      * @brief The board of play.
      */
-    Board board;
+    GameTree *tree;
+
+    /**
+     * @brief The starting board.
+     */
+    Board *startingBoard;
+
 
 };
 
