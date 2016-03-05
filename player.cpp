@@ -21,7 +21,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
     if (tree == NULL && opponentsMove == NULL) {
         tree = new GameTree(startingBoard, side, 2, testingMinimax);
     } else if (tree == NULL) {
-        startingBoard->doMove(opponentsMove, side);
+        startingBoard->doMove(opponentsMove, side == WHITE? BLACK: WHITE);
         tree = new GameTree(startingBoard, side, 2, testingMinimax);
     } else {
         tree->doMove(opponentsMove);
