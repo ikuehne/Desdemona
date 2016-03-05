@@ -48,6 +48,11 @@ public:
      */
     bool testingMinimax;
 
+    /**
+     * @brief The starting board.
+     */
+    Board *startingBoard;
+
 private:
 
     /**
@@ -56,21 +61,9 @@ private:
     Side side;
 
     /**
-     * @brief The other player's side.
-     */
-    Side opponent;
-
-    /**
      * @brief The board of play.
      */
     GameTree *tree;
-
-    /**
-     * @brief The starting board.
-     */
-    Board *startingBoard;
-
-
 };
 
 #endif

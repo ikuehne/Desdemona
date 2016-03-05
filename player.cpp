@@ -4,8 +4,6 @@ Player::Player(Side side) {
     testingMinimax = false;
 
     this->side = side;
-    opponent = side == BLACK? WHITE: BLACK;
-    srand(time(NULL));
 
     tree = NULL;
     startingBoard = new Board();
@@ -13,6 +11,10 @@ Player::Player(Side side) {
 
 
 Player::~Player() {
+    if (tree == NULL) {
+        delete startingBoard;
+    }
+    delete tree;
 }
 
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
@@ -20,8 +22,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
         tree = new GameTree(startingBoard, side, 2, testingMinimax);
     } else if (tree == NULL) {
         startingBoard->doMove(opponentsMove, side);
-        tree = new GameTree(startingBoard, side == WHITE? BLACK: WHITE,
-                            2, testingMinimax);
+        tree = new GameTree(startingBoard, side, 2, testingMinimax);
     } else {
         tree->doMove(opponentsMove);
     }
