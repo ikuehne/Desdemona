@@ -4,11 +4,17 @@
 #include <bitset>
 #include <vector>
 #include "common.h"
+#include <string>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 #define REGULAR_MUL 1
 #define SIDE_MUL 2
 #define CORNER_MUL 3
+#define BOARD_SIZE 64
+#define TOTAL_WEIGHTS 584
+#define HIDDEN_NODES 8
 
 /**
  * @brief Encapsulate an Othello board.
@@ -25,7 +31,12 @@ private:
     /**
      * @brief All pieces of any color on the board.
      */
-    bitset<64> taken;    
+    bitset<64> taken;
+
+    /**
+     * @brief arrays storing weights for neural net heuristic.
+     */
+    int *weights;
  
     /**
      * @brief Check if a square is occupied.
@@ -80,6 +91,12 @@ public:
      * @brief Construct a new board in the usual starting position.
      */
     Board();
+
+    /**
+     * @brief board constructor that takes pointers to neural
+     * network weights.
+     */
+    Board(int* weights);
 
     /**
      * @brief Clean up all resources associated with the board.
@@ -161,6 +178,8 @@ public:
      */
     void setBoard(char data[]);
 
+
+    int netAssess(Side side, bool testingMinimax);
     /**
      * @brief Provide an assessment of the favorability of the board.
      *

@@ -15,9 +15,30 @@ public class WrapperPlayer implements OthelloPlayer {
     private BufferedReader stderr;    
     private BufferedWriter bw;
     private String name;
+    private String weightfile;
 
     public WrapperPlayer(String programName) {
         this.name = programName;
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                try {
+                    if (p != null) {
+                        br.close();
+                        stderr.close();
+                        bw.close();
+                        p.destroy();
+                    }
+                } catch (Exception e) {   
+                    e.printStackTrace();
+                }                
+            }
+        });
+    }
+
+    public WrapperPlayer(String programName, String weights) {
+        this.name = programName;
+        this.weightfile = weights;
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -112,6 +133,9 @@ public class WrapperPlayer implements OthelloPlayer {
         try {
             String cmd = "ulimit -m " + MAX_MEMORY_KB + " -v " + MAX_MEMORY_KB + ";";
             cmd += "./" + name + " " + side;
+            if (weightfile != null) {
+                cmd += " " + weightfile;
+            }
             ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
             p = pb.start();            
             
@@ -126,4 +150,24 @@ public class WrapperPlayer implements OthelloPlayer {
             e.printStackTrace();
         }
     }
+
+    public void init(OthelloSide side, String weightfile) {
+        try {
+            String cmd = "ulimit -m " + MAX_MEMORY_KB + " -v " + MAX_MEMORY_KB + ";";
+            cmd += "./" + name + " " + side + " " + weightfile;
+            ProcessBuilder pb = new ProcessBuilder("bash", "-c", cmd);
+            p = pb.start();            
+            
+            br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            stderr = new BufferedReader(new InputStreamReader(p.getErrorStream()));                    
+            bw = new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
+              
+            // Wait for message that program is done initialization.                       
+            br.readLine();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

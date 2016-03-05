@@ -7,6 +7,24 @@ Board::Board() {
     taken.set(4 + 8 * 4);
     black.set(4 + 8 * 3);
     black.set(3 + 8 * 4);
+    weights = NULL;
+}
+
+
+/**
+ * Create a board with a heuristic neural net with weights
+ * in the given file.
+ */
+Board::Board(int* weights) {
+    taken.set(3 + 8 * 3);
+    taken.set(3 + 8 * 4);
+    taken.set(4 + 8 * 3);
+    taken.set(4 + 8 * 4);
+    black.set(4 + 8 * 3);
+    black.set(3 + 8 * 4);
+
+    this->weights = weights;
+
 }
 
 Board::~Board() {
@@ -16,6 +34,7 @@ Board *Board::copy() {
     Board *newBoard = new Board();
     newBoard->black = black;
     newBoard->taken = taken;
+    newBoard->weights = weights;
     return newBoard;
 }
 
@@ -144,6 +163,48 @@ void Board::setBoard(char data[]) {
     }
 }
 
+int Board::netAssess(Side side, bool testingMinimax) {
+    int score = 0;
+
+    int mul = side == WHITE? 1: -1;
+
+    score += REGULAR_MUL * mul * countWhite();
+    score -= REGULAR_MUL * mul * countBlack();
+
+    if (testingMinimax) return score;
+    
+    // Noah's neural network assessment algorithm
+    // IN PROGRESS
+    
+    score = 0;
+    for (int i = 0; i < BOARD_SIZE; i++)
+    {
+        if (taken[i] && !black[i]) score += mul * weights[i];
+        if (taken[i] && black[i]) score -= mul * weights[i];
+    
+    }
+
+    // feed through hidden neurons
+    for (int n = 0; n < HIDDEN_NODES; n++)
+    {
+        int activation = 0;
+        for (int s = 0; s < BOARD_SIZE; s++)
+        {
+            int w = BOARD_SIZE + n * BOARD_SIZE + s;
+            if (taken[s] && !black[s])
+                activation += mul * weights[w];
+            if (taken[s] && black[s])
+                activation -= mul * weights[w];
+        }
+        // index of weight from nth hidden neuron to output
+        int w = BOARD_SIZE + HIDDEN_NODES * BOARD_SIZE + n;
+        score += activation * weights[w];
+    }
+
+    return score;
+
+}
+
 int Board::assess(Side side, bool testingMinimax) {
     int score = 0;
     int mul = side == WHITE? 1: -1;
@@ -152,6 +213,9 @@ int Board::assess(Side side, bool testingMinimax) {
     score -= REGULAR_MUL * mul * countBlack();
 
     if (testingMinimax) return score;
+
+    
+    // Matrix operations
 
     // Left side.
     for (int i = 0; i < 64; i += 8) {
@@ -172,7 +236,7 @@ int Board::assess(Side side, bool testingMinimax) {
     }
 
     // Top.
-    for (int i = 56; i < 8; i ++) {
+    for (int i = 56; i < 64; i ++) {
         if (taken[i] && !black[i]) score += mul * (SIDE_MUL - REGULAR_MUL);
         if (taken[i] &&  black[i]) score -= mul * (SIDE_MUL - REGULAR_MUL);
     }

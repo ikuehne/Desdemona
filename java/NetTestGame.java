@@ -1,4 +1,4 @@
-public class TestGame {
+public class NetTestGame {
 
     public static void main(String[] args) {
         if (args.length != 2 && args.length != 3 && args.length != 4) {
@@ -27,7 +27,7 @@ public class TestGame {
             } else if (args[i].equalsIgnoreCase("Human")) {
                 players[i] = new OthelloDisplay(which++);
             } else {
-                players[i] = new WrapperPlayer(args[i]);
+                players[i] = new WrapperPlayer("neuralnetplayer", args[i]);
             }             
         }
         

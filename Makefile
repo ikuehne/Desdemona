@@ -1,10 +1,11 @@
 CC          = g++
 DOCGEN      = doxygen
-CFLAGS      = -Wall -ansi -pedantic -ggdb
+CFLAGS      = -Wall -ansi -pedantic -ggdb -std=c++11
 OBJS        = player.o board.o
 PLAYERNAME  = player
+NETPLAYER   = neuralnetplayer
 
-all: $(PLAYERNAME) testgame
+all: $(PLAYERNAME) $(NETPLAYER) testgame nettestgame
 
 doc:
 	$(DOCGEN) DoxygenLayout.xml
@@ -13,7 +14,13 @@ doc:
 $(PLAYERNAME): $(OBJS) wrapper.o
 	$(CC) -o $@ $^
 
+$(NETPLAYER): neuralnetplayer.o board.o netwrapper.o
+	$(CC) -o $@ $^
+
 testgame: testgame.o
+	$(CC) -o $@ $^
+
+nettestgame: nettestgame.o
 	$(CC) -o $@ $^
 
 testminimax: $(OBJS) testminimax.o
@@ -29,7 +36,7 @@ cleanjava:
 	make -C java/ clean
 
 clean:
-	rm -f *.o $(PLAYERNAME) testgame testminimax
+	rm -f *.o $(PLAYERNAME) $(NETPLAYER) nettestgame testgame testminimax
 	rm -rf html
 	
 .PHONY: java testminimax

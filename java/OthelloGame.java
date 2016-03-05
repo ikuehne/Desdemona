@@ -201,6 +201,130 @@ public class OthelloGame implements Runnable {
     }
 
     /**
+     * Runs the game, returning the winning player as an OthelloSide.
+     **/
+    public OthelloSide runCheck() {
+        OthelloSide turn = OthelloSide.BLACK;
+        Move m = null;
+        OthelloResult r = new OthelloResult();
+
+        // Initialize the players.
+        try {
+           doInit(OthelloSide.BLACK);
+        } catch(GameException e) {
+           // Disqualify them if they fail to init.
+           if(observer != null) {
+              r.error = e;
+              r.conclusion = OthelloResult.BLACK_ERROR_CONCLUSION;
+              observer.OnGameOver(r);
+           }
+           //ERROR occurred, this is not a good behavior
+           return r.getWinner();
+        }
+
+        try {
+           doInit(OthelloSide.WHITE);
+        } catch(GameException e) {
+           // Disqualify them if they fail to init.
+           if(observer != null) {
+              r.error = e;
+              r.conclusion = OthelloResult.BLACK_ERROR_CONCLUSION;
+              observer.OnGameOver(r);
+           }
+           return r.getWinner();
+        }
+
+        // Run the game until there are no moves left.
+        while(!board.isDone()) {
+            // Collect garbage.
+            System.gc();
+
+            // Get the player's move.
+            long startTime = System.currentTimeMillis();
+            try {
+               m = getMove(turn, m);
+               long endTime = System.currentTimeMillis();
+
+               // Record the player's time and update the time remaining.
+               if(turn == OthelloSide.BLACK) {
+                  r.blackTime += endTime - startTime;
+                  if(timed)
+                     blackTimeout -= endTime - startTime;
+               } else {
+                  r.whiteTime += endTime - startTime;
+                  if(timed)
+                     whiteTimeout -= endTime - startTime;
+               }
+            }
+            catch(GameException e) {
+               // The player had some sort of error, so notify the
+               // observer and disqualify them.
+               long endTime = System.currentTimeMillis();
+
+               // Record the player's time.
+               if(turn == OthelloSide.BLACK)
+                  r.blackTime += endTime - startTime;
+               else
+                  r.whiteTime += endTime - startTime;
+
+               if(observer != null) {
+                   // Tell the observer that the game's over.
+                   r.error = e;
+                   if(turn == OthelloSide.BLACK)
+                       r.conclusion = OthelloResult.BLACK_ERROR_CONCLUSION;
+                   else
+                       r.conclusion = OthelloResult.WHITE_ERROR_CONCLUSION;
+                   observer.OnGameOver(r);
+               }
+
+               return r.getWinner();
+            }
+
+            // Make sure the move is legal.
+            // Note that passing is only legal if there are no legal moves.
+            if(!board.checkMove(m, turn)) {
+                if(observer != null) {
+                    // Tell the observer that the game's over.
+                    r.error = new BadMoveException(m);
+                    if(turn == OthelloSide.BLACK)
+                        r.conclusion = OthelloResult.BLACK_ERROR_CONCLUSION;
+                    else
+                        r.conclusion = OthelloResult.WHITE_ERROR_CONCLUSION;
+                    observer.OnGameOver(r);
+                }
+                return r.getWinner();
+            }
+
+            // Notify the observer of the move.
+            if(observer != null) {
+                observer.OnMove(m, blackTimeout, whiteTimeout);
+            }
+            // Notify the board of the move.
+            board.move(m, turn);
+
+            // It's now the other player's turn.
+            if(turn == OthelloSide.BLACK)
+                turn = OthelloSide.WHITE;
+            else
+                turn = OthelloSide.BLACK;
+        } /* while */
+        // The board is now either full or there are no more legal moves
+        // and the game ended normally.
+        r.conclusion = OthelloResult.NORMAL_CONCLUSION;
+        r.blackScore = board.countBlack();
+        r.whiteScore = board.countWhite();
+            
+        // Tell the observer that the game's over.
+        if(observer != null) {
+            // The total running time for these guys is already set.
+            observer.OnGameOver(r);
+        }
+
+
+        return r.getWinner();
+    }
+
+    /**
      * Spawn a thread waiting for a player's move.  If the call doesn't
      * return within the timeout, {@link #getMove} kills it (and
      * anything else in its thread group) and throws TimeoutException.

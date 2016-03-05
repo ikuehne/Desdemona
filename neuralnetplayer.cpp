@@ -1,21 +1,29 @@
-#include "player.h"
-Player::Player(Side side) {
-    // Will be set to true in test_minimax.cpp.
-    testingMinimax = false;
+#include "neuralnetplayer.h"
 
+NeuralNetPlayer::NeuralNetPlayer(Side side, char* weightFile) {
+
+    testingMinimax = false;
     this->side = side;
     opponent = side == BLACK? WHITE: BLACK;
     srand(time(NULL));
 
+    ifstream file(weightFile);
+    std::string line;
+    for (int i = 0; i < TOTAL_WEIGHTS; i++)
+    {
+        std::getline(file, line);
 
-    board = Board();
+        int weight = std::stoi(line);
+        weights[i] = weight;
+    }
+
+    board = Board(weights);
 }
 
-
-Player::~Player() {
+NeuralNetPlayer::~NeuralNetPlayer() {
 }
 
-Move *Player::doMove(Move *opponentsMove, int msLeft) {
+Move *NeuralNetPlayer::doMove(Move *opponentsMove, int msLeft) {
     board.doMove(opponentsMove, opponent);
 
     std::vector<Move *> *legals = board.getLegals(side);
@@ -29,14 +37,14 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 
     Move *max_move = (*legals)[0];
     temp->doMove(max_move, side);
-    max_score = temp->assess(side, testingMinimax);
+    max_score = temp->netAssess(side, testingMinimax);
     delete temp;
 
     for (int i = 1; i < legals->size(); i++) {
         temp = board.copy();
         temp->doMove((*legals)[i], side);
 
-        curr_score = temp->assess(side, testingMinimax);
+        curr_score = temp->netAssess(side, testingMinimax);
         if (curr_score > max_score) {
             max_score = curr_score;
             max_move = (*legals)[i];
