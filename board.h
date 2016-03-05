@@ -14,6 +14,7 @@ using namespace std;
 #define CORNER_MUL 3
 #define BOARD_SIZE 64
 #define TOTAL_WEIGHTS 584
+#define HIDDEN_NODES 8
 
 /**
  * @brief Encapsulate an Othello board.

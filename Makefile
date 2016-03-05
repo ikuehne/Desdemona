@@ -5,7 +5,7 @@ OBJS        = player.o board.o
 PLAYERNAME  = player
 NETPLAYER   = neuralnetplayer
 
-all: $(PLAYERNAME) testgame nettestgame
+all: $(PLAYERNAME) $(NETPLAYER) testgame nettestgame
 
 doc:
 	$(DOCGEN) DoxygenLayout.xml
@@ -36,7 +36,7 @@ cleanjava:
 	make -C java/ clean
 
 clean:
-	rm -f *.o $(PLAYERNAME) testgame testminimax
+	rm -f *.o $(PLAYERNAME) $(NETPLAYER) nettestgame testgame testminimax
 	rm -rf html
 	
 .PHONY: java testminimax

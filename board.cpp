@@ -183,6 +183,24 @@ int Board::netAssess(Side side, bool testingMinimax) {
         if (taken[i] && black[i]) score -= mul * weights[i];
     
     }
+
+    // feed through hidden neurons
+    for (int n = 0; n < HIDDEN_NODES; n++)
+    {
+        int activation = 0;
+        for (int s = 0; s < BOARD_SIZE; s++)
+        {
+            int w = BOARD_SIZE + n * BOARD_SIZE + s;
+            if (taken[s] && !black[s])
+                activation += mul * weights[w];
+            if (taken[s] && black[s])
+                activation -= mul * weights[w];
+        }
+        // index of weight from nth hidden neuron to output
+        int w = BOARD_SIZE + HIDDEN_NODES * BOARD_SIZE + n;
+        score += activation * weights[w];
+    }
+
     return score;
 
 }
