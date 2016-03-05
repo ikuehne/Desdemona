@@ -7,6 +7,7 @@
 #include <ctime>
 #include "common.h"
 #include "board.h"
+#include "gametree.h"
 
 #define HIDDEN_NODES 8
 #define TOTAL_WEIGHTS 584
@@ -52,6 +53,11 @@ public:
      */
     bool testingMinimax;
 
+    /**
+     * @brief the starting board
+     */
+    Board *startingBoard;
+
 private:
 
     /**
@@ -65,14 +71,9 @@ private:
     Side side;
 
     /**
-     * @brief The other player's side.
-     */
-    Side opponent;
-
-    /**
      * @brief The board of play.
      */
-    Board board;
+    GameTree *tree;
 
 };
 

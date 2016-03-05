@@ -9,6 +9,9 @@
 #include "board.h"
 #include "gametree.h"
 
+#define BASIC_WEIGHT_FILE "basicweightsint.txt"
+#define TOTAL_WEIGHTS 584
+
 /**
  * @brief represent an Othello player.
  *
@@ -54,6 +57,8 @@ public:
     Board *startingBoard;
 
 private:
+
+    int weights[TOTAL_WEIGHTS];
 
     /**
      * @brief This player's side.

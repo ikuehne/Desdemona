@@ -4,8 +4,8 @@ NeuralNetPlayer::NeuralNetPlayer(Side side, char* weightFile) {
 
     testingMinimax = false;
     this->side = side;
-    opponent = side == BLACK? WHITE: BLACK;
-    srand(time(NULL));
+
+    tree = NULL;
 
     ifstream file(weightFile);
     std::string line;
@@ -17,51 +17,27 @@ NeuralNetPlayer::NeuralNetPlayer(Side side, char* weightFile) {
         weights[i] = weight;
     }
 
-    board = Board(weights);
+    startingBoard = new Board(weights);
 }
 
 NeuralNetPlayer::~NeuralNetPlayer() {
+    if (tree == NULL) {
+        delete startingBoard;
+    }
+    delete tree;
 }
 
 Move *NeuralNetPlayer::doMove(Move *opponentsMove, int msLeft) {
-    board.doMove(opponentsMove, opponent);
-
-    std::vector<Move *> *legals = board.getLegals(side);
-    Move curr(0, 0);
-
-    if (legals->size() == 0) return NULL;
-
-    Board *temp = board.copy();
-    int max_score;
-    int curr_score;
-
-    Move *max_move = (*legals)[0];
-    temp->doMove(max_move, side);
-    max_score = temp->netAssess(side, testingMinimax);
-    delete temp;
-
-    for (int i = 1; i < legals->size(); i++) {
-        temp = board.copy();
-        temp->doMove((*legals)[i], side);
-
-        curr_score = temp->netAssess(side, testingMinimax);
-        if (curr_score > max_score) {
-            max_score = curr_score;
-            max_move = (*legals)[i];
-        }
-        delete temp;
+    if (tree == NULL && opponentsMove == NULL) {
+        tree = new GameTree(startingBoard, side, 2, testingMinimax);
+    } else if (tree == NULL) {
+        startingBoard->doMove(opponentsMove, side == WHITE? BLACK: WHITE);
+        tree = new GameTree(startingBoard, side, 2, testingMinimax);
+    } else {
+        tree->doMove(opponentsMove);
     }
 
-    curr.setX(max_move->x);
-    curr.setY(max_move->y);
-    
-    for (int i = 0; i < legals->size(); i++) delete (*legals)[i];
-
-    delete legals;
-
-    if (!board.checkMove(&curr, side)) return NULL;
-
-    board.doMove(&curr, side);
-
-    return new Move(curr.getX(), curr.getY());
+    Move *move = tree->getBestMove();
+    tree->doMove(move);
+    return move;
 }

@@ -163,7 +163,7 @@ void Board::setBoard(char data[]) {
     }
 }
 
-int Board::netAssess(Side side, bool testingMinimax) {
+int Board::assess(Side side, bool testingMinimax) {
     int score = 0;
 
     int mul = side == WHITE? 1: -1;
@@ -205,7 +205,7 @@ int Board::netAssess(Side side, bool testingMinimax) {
 
 }
 
-int Board::assess(Side side, bool testingMinimax) {
+int Board::old_assess(Side side, bool testingMinimax) {
     int score = 0;
     int mul = side == WHITE? 1: -1;
 

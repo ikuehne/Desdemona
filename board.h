@@ -179,7 +179,7 @@ public:
     void setBoard(char data[]);
 
 
-    int netAssess(Side side, bool testingMinimax);
+    int assess(Side side, bool testingMinimax);
     /**
      * @brief Provide an assessment of the favorability of the board.
      *
@@ -191,7 +191,7 @@ public:
      * @return An integer score which is higher for a favorable position and
      *         lower for an unfavorable one.
      */
-    int assess(Side side, bool testingMinimax);
+    int old_assess(Side side, bool testingMinimax);
 
     /**
      * @brief Get a vector of all legal moves for a given side.

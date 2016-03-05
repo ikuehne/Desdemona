@@ -6,7 +6,19 @@ Player::Player(Side side) {
     this->side = side;
 
     tree = NULL;
-    startingBoard = new Board();
+
+    ifstream file(BASIC_WEIGHT_FILE);
+    std::string line;
+    for (int i = 0; i < TOTAL_WEIGHTS; i++)
+    {
+        std::getline(file, line);
+
+        int weight = std::stoi(line);
+        weights[i] = weight;
+    }
+
+
+    startingBoard = new Board(weights);
 }
 
 

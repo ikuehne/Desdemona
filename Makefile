@@ -14,7 +14,7 @@ doc:
 $(PLAYERNAME): $(OBJS) wrapper.o
 	$(CC) -o $@ $^
 
-$(NETPLAYER): neuralnetplayer.o board.o netwrapper.o
+$(NETPLAYER): neuralnetplayer.o board.o netwrapper.o gametree.o
 	$(CC) -o $@ $^
 
 testgame: testgame.o
