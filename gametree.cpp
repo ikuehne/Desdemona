@@ -43,7 +43,7 @@ int GameTree::assess() {
     }
  
     if (next->size() == 0) {
-        return board->assess(side, testingMinimax);
+        return INT_MIN;
     }
 
     int curr_score;
@@ -107,16 +107,20 @@ void GameTree::addPly(int c) {
 }
 
 void GameTree::doMove(Move *move) {
+    // If the other player passes, we might as well throw everything out.
     if (move == NULL) {
         side = side == WHITE? BLACK: WHITE;
         delete next;
         next = NULL;
-
         addPly(originalLevel);
         return;
     }
 
+    // If this is the end of the line (which should probably never happen),
+    // just change the current player.
     if (next == NULL) {
+        cerr << "WARNING: making move at the end of the tree." << endl;
+        cerr << "This is probably not the intended behavior." << endl << endl;
         board->doMove(move, side);
         side = side == WHITE? BLACK: WHITE;
 

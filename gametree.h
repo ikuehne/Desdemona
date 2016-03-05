@@ -1,5 +1,6 @@
 #include <utility>
 #include <vector>
+#include <climits>
 #include <iostream>
 #include "common.h"
 #include "board.h"
