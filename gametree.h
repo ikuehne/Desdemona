@@ -77,7 +77,7 @@ protected:
      *
      * Do nothing if `next` is NULL.
      */
-    void delete_next(void);
+    void deleteNext(void);
 
     /**
      * @brief The original depth of the tree.
@@ -108,18 +108,6 @@ protected:
      * @brief The side of the player.
      */
     Side side;
-
-    /**
-     * @brief The best known move from this point, or NULL if the best move
-     *        has not been calculated.
-     */
-    Move *best_move;
-
-    /**
-     * @brief The worst known score below this point, or NULL if that has not
-     *        been calculated.
-     */
-    int *worst_score;
 
     /**
      * @brief Whether the tree is being used to test minimax.

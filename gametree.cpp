@@ -23,7 +23,7 @@ GameTree::GameTree(Board *board, Side side, int level,
     addPly(level);
 }
 
-void GameTree::delete_next(void) {
+void GameTree::deleteNext(void) {
     if (next != NULL) {
         for (int i = 0; i < next->size(); i++) {
             delete (*next)[i].first;
@@ -35,7 +35,7 @@ void GameTree::delete_next(void) {
 }
 
 GameTree::~GameTree() {
-    delete_next();
+    deleteNext();
     delete board;
 }
 
@@ -48,15 +48,15 @@ int GameTree::assess() {
     // Otherwise, get the assessment for this side (the negative of the
     // assessments for the other side) for each possible next board, and take
     // the maximum of those.
-    int curr_score;
-    int max_score = -(*next)[0].second->assess();
+    int currScore;
+    int maxScore = -(*next)[0].second->assess();
 
     for (int i = 1; i < next->size(); i++) {
-        curr_score = -(*next)[i].second->assess();
-        if (curr_score > max_score) max_score = curr_score;
+        currScore = -(*next)[i].second->assess();
+        if (currScore > maxScore) maxScore = currScore;
     }
 
-    return max_score;
+    return maxScore;
 }
 
 Move *GameTree::getBestMove() {
@@ -66,20 +66,20 @@ Move *GameTree::getBestMove() {
     // Otherwise, take the negative of all of the assessments of the next
     // boards (equivalent to the assessment for this side) and return the move
     // that maximizes that.
-    int curr_score;
-    int best_score = -(*next)[0].second->assess();
+    int currScore;
+    int bestScore = -(*next)[0].second->assess();
 
-    Move *best_move = (*next)[0].first;
+    Move *bestMove = (*next)[0].first;
     
     for (int i = 1; i < next->size(); i++) {
-        curr_score = -(*next)[i].second->assess();
-        if (curr_score > best_score) {
-            best_score = curr_score;
-            best_move = (*next)[i].first;
+        currScore = -(*next)[i].second->assess();
+        if (currScore > bestScore) {
+            bestScore = currScore;
+            bestMove = (*next)[i].first;
         }
     }
 
-    return new Move(*best_move);
+    return new Move(*bestMove);
 }
 
 void GameTree::addPly(int c) {
@@ -95,7 +95,7 @@ void GameTree::addPly(int c) {
         // Start with a vector all legal moves.
         std::vector<Move *> *legals = board->getLegals(side);
         Board *temp;
-        GameTree *next_tree;
+        GameTree *nextTree;
 
         // For each of those,
         for (int i = 0; i < legals->size(); i++) {
@@ -106,12 +106,12 @@ void GameTree::addPly(int c) {
 
             // and the resulting tree (to `c - 1` levels, because we just
             // added a level),
-            next_tree = new GameTree(temp,  other,
-                                     c - 1, originalLevel, testingMinimax);
+            nextTree = new GameTree(temp,  other,
+                                    c - 1, originalLevel, testingMinimax);
 
             // And add those to the next level.
             next->push_back(pair<Move *, GameTree *>((*legals)[i],
-                                                     next_tree));
+                                                     nextTree));
         }
 
         // Clean up.
@@ -129,7 +129,7 @@ void GameTree::doMove(Move *move) {
     if (move == NULL) {
         side = side == WHITE? BLACK: WHITE;
 
-        delete_next();
+        deleteNext();
 
         addPly(originalLevel);
         return;
@@ -158,28 +158,28 @@ void GameTree::doMove(Move *move) {
             // copying everything over.
             
             // The tree we want to copy into this one.
-            GameTree *new_tree = (*next)[i].second;
+            GameTree *newTree = (*next)[i].second;
 
-            // Make sure `new_tree` won't be deleted
+            // Make sure `newTree` won't be deleted
             (*next)[i].second = NULL;
             // when we free the subtrees.
-            delete_next();
+            deleteNext();
 
             // Copy over the tree from one level down (pointerwise, so this is
             // not an expensive operation).
-            next = new_tree->next;
-            new_tree->next = NULL;
+            next = newTree->next;
+            newTree->next = NULL;
 
             // Do a similar operation with the board.
             delete board;
-            board = new_tree->board;
-            new_tree->board = NULL;
+            board = newTree->board;
+            newTree->board = NULL;
 
             // Change sides after each move.
-            side = new_tree->side;
+            side = newTree->side;
 
             // We're done with this.
-            delete new_tree;
+            delete newTree;
 
             // Add a new level to keep the tree at the desired depth.
             addPly(1);
