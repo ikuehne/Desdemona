@@ -150,16 +150,25 @@ void GameTree::doMove(Move *move) {
 
         // If the results of the move have already been calculated,
         if (*move == *((*next)[i].first)) {
-            // Transfer a bunch of crap from that branch to this one:
+            // Transfer a bunch of crap from that branch to this one.  We do
+            // this carefully so that we copy as few things as possible while
+            // avoiding as much duplicate computation as possible--we want to
+            // copy over all of the sublevels from the subtree, but we don't
+            // want to do it the naive way by simply allocating a new tree and
+            // copying everything over.
             
             // The tree we want to copy into this one.
             GameTree *new_tree = (*next)[i].second;
+
+            // Make sure `new_tree` won't be deleted
             (*next)[i].second = NULL;
+            // when we free the subtrees.
             delete_next();
 
             // Copy over the tree from one level down (pointerwise, so this is
             // not an expensive operation).
             next = new_tree->next;
+            new_tree->next = NULL;
 
             // Do a similar operation with the board.
             delete board;
@@ -168,6 +177,9 @@ void GameTree::doMove(Move *move) {
 
             // Change sides after each move.
             side = new_tree->side;
+
+            // We're done with this.
+            delete new_tree;
 
             // Add a new level to keep the tree at the desired depth.
             addPly(1);
