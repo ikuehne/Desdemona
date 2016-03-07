@@ -23,17 +23,19 @@ GameTree::GameTree(Board *board, Side side, int level,
     addPly(level);
 }
 
-GameTree::~GameTree() {
-    if (next) {
-        // Clean up each of the subtrees,
+void GameTree::delete_next(void) {
+    if (next != NULL) {
         for (int i = 0; i < next->size(); i++) {
             delete (*next)[i].first;
             delete (*next)[i].second;
         }
+        delete next;
+        next = NULL;
     }
+}
 
-    // And then the obvious stuff.
-    delete next;
+GameTree::~GameTree() {
+    delete_next();
     delete board;
 }
 
@@ -126,8 +128,9 @@ void GameTree::doMove(Move *move) {
     // If the other player passes, we might as well throw everything out.
     if (move == NULL) {
         side = side == WHITE? BLACK: WHITE;
-        delete next;
-        next = NULL;
+
+        delete_next();
+
         addPly(originalLevel);
         return;
     }
@@ -151,16 +154,12 @@ void GameTree::doMove(Move *move) {
             
             // The tree we want to copy into this one.
             GameTree *new_tree = (*next)[i].second;
-
-            // Keep track of the old `next` so that we can clean it up later.
-            vector<pair<Move *, GameTree *> > *old_next = next;
+            (*next)[i].second = NULL;
+            delete_next();
 
             // Copy over the tree from one level down (pointerwise, so this is
             // not an expensive operation).
             next = new_tree->next;
-
-            // We don't want this to be freed when we clean up `old_next`.
-            new_tree->next = NULL;
 
             // Do a similar operation with the board.
             delete board;
@@ -169,13 +168,6 @@ void GameTree::doMove(Move *move) {
 
             // Change sides after each move.
             side = new_tree->side;
-
-            // And then clean it all up.
-            for (int j = 0; j < old_next->size(); j++) {
-                delete (*old_next)[j].first;
-                delete (*old_next)[j].second;
-            }
-            delete old_next;
 
             // Add a new level to keep the tree at the desired depth.
             addPly(1);

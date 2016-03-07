@@ -73,6 +73,13 @@ protected:
              bool testingMinimax);
 
     /**
+     * @brief Delete the `next` array along with all subtrees.
+     *
+     * Do nothing if `next` is NULL.
+     */
+    void delete_next(void);
+
+    /**
      * @brief The original depth of the tree.
      */
     int startingdepth;
