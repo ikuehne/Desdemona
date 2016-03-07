@@ -2,7 +2,7 @@ CC          = g++
 DOCGEN      = doxygen
 CFLAGS      = -Wall -ansi -pedantic -ggdb -std=c++11
 OBJS        = player.o board.o gametree.o
-PLAYERNAME  = player
+PLAYERNAME  = desdemona
 NETPLAYER   = neuralnetplayer
 
 all: $(PLAYERNAME) $(NETPLAYER) testgame nettestgame
