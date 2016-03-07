@@ -38,14 +38,14 @@ GameTree::~GameTree() {
 }
 
 int GameTree::assess() {
-    if (next == NULL) {
+    // If this is the end of the line, just assess the board for the current
+    // side.
+    if (next == NULL || next->size() == 0)
         return board->assess(side, testingMinimax);
-    }
- 
-    if (next->size() == 0) {
-        return INT_MIN;
-    }
 
+    // Otherwise, get the assessment for this side (the negative of the
+    // assessments for the other side) for each possible next board, and take
+    // the maximum of those.
     int curr_score;
     int max_score = -(*next)[0].second->assess();
 
@@ -58,8 +58,12 @@ int GameTree::assess() {
 }
 
 Move *GameTree::getBestMove() {
+    // If this is the end of the line, pass.
     if (next == NULL || next->size() == 0) return NULL;   
 
+    // Otherwise, take the negative of all of the assessments of the next
+    // boards (equivalent to the assessment for this side) and return the move
+    // that maximizes that.
     int curr_score;
     int best_score = -(*next)[0].second->assess();
 
@@ -79,31 +83,43 @@ Move *GameTree::getBestMove() {
 void GameTree::addPly(int c) {
     if (c == 0) return;
 
+    // If this is the bottom of the tree,
     if (next == NULL) {
+
+        // Create a vector of all of the possible trees down from here.
         next = new vector<pair<Move *, GameTree *> >();
         Side other = side == WHITE? BLACK: WHITE;
+
+        // Start with a vector all legal moves.
         std::vector<Move *> *legals = board->getLegals(side);
         Board *temp;
         GameTree *next_tree;
+
+        // For each of those,
         for (int i = 0; i < legals->size(); i++) {
+
+            // create the resulting board
             temp = board->copy();
             temp->doMove((*legals)[i], side);
+
+            // and the resulting tree (to `c - 1` levels, because we just
+            // added a level),
             next_tree = new GameTree(temp,  other,
                                      c - 1, originalLevel, testingMinimax);
-            next->push_back(pair<Move *, GameTree *>(new Move(*(*legals)[i]),
+
+            // And add those to the next level.
+            next->push_back(pair<Move *, GameTree *>((*legals)[i],
                                                      next_tree));
         }
-        for (int i = 0; i < legals->size(); i++) {
-            delete (*legals)[i];
-        }
 
+        // Clean up.
         delete legals;
         return;
     }
 
-    for (int i = 0; i < next->size(); i++) {
-        (*next)[i].second->addPly(c);
-    }
+    // If this is not the bottom of the tree, just recurse into the next
+    // level.
+    for (int i = 0; i < next->size(); i++) (*next)[i].second->addPly(c);
 }
 
 void GameTree::doMove(Move *move) {
@@ -131,14 +147,27 @@ void GameTree::doMove(Move *move) {
 
         // If the results of the move have already been calculated,
         if (*move == *((*next)[i].first)) {
-            // Transfer a bunch of crap from that branch to this one,
+            // Transfer a bunch of crap from that branch to this one:
+            
+            // The tree we want to copy into this one.
             GameTree *new_tree = (*next)[i].second;
+
+            // Keep track of the old `next` so that we can clean it up later.
             vector<pair<Move *, GameTree *> > *old_next = next;
+
+            // Copy over the tree from one level down (pointerwise, so this is
+            // not an expensive operation).
             next = new_tree->next;
+
+            // We don't want this to be freed when we clean up `old_next`.
             new_tree->next = NULL;
 
+            // Do a similar operation with the board.
+            delete board;
             board = new_tree->board;
             new_tree->board = NULL;
+
+            // Change sides after each move.
             side = new_tree->side;
 
             // And then clean it all up.
@@ -147,9 +176,14 @@ void GameTree::doMove(Move *move) {
                 delete (*old_next)[j].second;
             }
             delete old_next;
+
+            // Add a new level to keep the tree at the desired depth.
+            addPly(1);
+
+            // No point in continuing the search.
+            return;
         }
     }
-    addPly(1);
 }
 
 void GameTree::doOpponentMove(Move *move) {

@@ -8,6 +8,12 @@
 
 using namespace std;
 
+/**
+ * @brief Encapsulate an Othello game tree.
+ *
+ * Each tree consists of a side it plays for, a board it plays on, and a
+ * series of subtrees representing possible subsequent states of the board.
+ */
 class GameTree {
 public:
     /**
