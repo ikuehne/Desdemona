@@ -11,6 +11,7 @@
 
 #define BASIC_WEIGHT_FILE "basicweightsint.txt"
 #define TOTAL_WEIGHTS 584
+#define MAX_PLY 4
 
 /**
  * @brief represent an Othello player.

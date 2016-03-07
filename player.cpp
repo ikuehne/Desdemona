@@ -30,11 +30,12 @@ Player::~Player() {
 }
 
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
+    int ply = testingMinimax? 2: MAX_PLY;
     if (tree == NULL && opponentsMove == NULL) {
-        tree = new GameTree(startingBoard, side, 2, testingMinimax);
+        tree = new GameTree(startingBoard, side, ply, testingMinimax);
     } else if (tree == NULL) {
         startingBoard->doMove(opponentsMove, side == WHITE? BLACK: WHITE);
-        tree = new GameTree(startingBoard, side, 2, testingMinimax);
+        tree = new GameTree(startingBoard, side, ply, testingMinimax);
     } else {
         tree->doMove(opponentsMove);
     }
