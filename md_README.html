@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.11"/>
-<title>Desdemona: README</title>
+<title>Desdemona: Desdemona</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -77,11 +77,16 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">README </div>  </div>
+<div class="title">Desdemona </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Caltech CS2 Assignment 9: Othello</p>
-<p>See <a href="http://htmlpreview.github.io/?https://github.com/caltechcs2/othello/blob/master/assignment9_part1.html">assignment9_part1.html</a> and <a href="http://htmlpreview.github.io/?https://github.com/caltechcs2/othello/blob/master/assignment9_part2.html">assignment9_part2.html</a> </p>
+<div class="textblock"><p>Computer play Othello good.</p>
+<h2>Usage </h2>
+<p>The simplest way to compile Desdemona is </p><pre class="fragment">$ make testgame desdemona
+</pre><p>To use the resulting <code>desdemona</code> executable, </p><pre class="fragment">$ testgame [black] [white]
+</pre><p>Where <code>[black]</code> is the name of the black player and <code>[white]</code> is the name of the white player. These may be any of <code>simpleplayer</code>, which plays randomly; <code>desdemona</code>, a new AI under development; <code>betterplayer</code>, which searches a game tree to depth 3; and <code>human</code>, which allows a human to play one or both sides.</p>
+<h2>Documentation </h2>
+<p>Documentation on the C++ portion of Desdemona's codebase may be found <a href="http://ikuehne.github.io/Desdemona/annotated.html">here</a>. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
