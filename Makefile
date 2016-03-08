@@ -8,7 +8,7 @@ NETPLAYER   = neuralnetplayer
 all: $(PLAYERNAME) $(NETPLAYER) testgame nettestgame
 
 doc:
-	$(DOCGEN) DoxygenLayout.xml
+	$(DOCGEN) Doxyfile
 	rm -r latex
 	
 $(PLAYERNAME): $(OBJS) wrapper.o
