@@ -31,14 +31,18 @@ Player::~Player() {
 
 Move *Player::doMove(Move *opponentsMove, int msLeft) {
     int ply = testingMinimax? 2: MAX_PLY;
-    if (tree == NULL && opponentsMove == NULL) {
-        tree = new GameTree(startingBoard, side, ply, testingMinimax);
-    } else if (tree == NULL) {
+
+    // If we're black and this is white's first move,
+    if (tree == NULL && opponentsMove != NULL)
+        // Change the starting board before creating the tree.
         startingBoard->doMove(opponentsMove, side == WHITE? BLACK: WHITE);
+
+    // If this is the first move, create the tree.
+    if (tree == NULL)
         tree = new GameTree(startingBoard, side, ply, testingMinimax);
-    } else {
-        tree->doMove(opponentsMove);
-    }
+
+    // Otherwise, do the move on the tree.
+    else tree->doOpponentMove(opponentsMove);
 
     Move *move = tree->getBestMove();
     tree->doMove(move);
