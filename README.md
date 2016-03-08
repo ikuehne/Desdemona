@@ -22,5 +22,7 @@ tree to depth 3; and `human`, which allows a human to play one or both sides.
 Documentation
 -------------
 
-Documentation on the C++ portion of Othello's codebase may be found at
-<http://ikuehne.github.io/Desdemona/annotated.html>.
+Documentation on the C++ portion of Desdemona's codebase may be found
+[here][doc].
+
+[doc]: http://ikuehne.github.io/Desdemona/annotated.html
